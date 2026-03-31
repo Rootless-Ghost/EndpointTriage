@@ -1,3 +1,4 @@
+<div align="center">
 # EndpointTriage
 
 **Automated forensic artifact collector for Windows endpoint incident response.**
@@ -6,6 +7,7 @@ PowerShell-based triage script that collects volatile and non-volatile forensic 
 
 Built for SOC analysts and incident responders who need fast, repeatable endpoint collection without deploying heavyweight forensic suites.
 
+</div>
 ---
 
 ## Artifact Collection
@@ -159,7 +161,8 @@ Each log source targets specific Event IDs relevant to incident response:
 ## License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) for details. 
-
+<div align="center">
 ## Author
 
 **RG-Nebula** — [github.com/Rootless-Ghost](https://github.com/Rootless-Ghost)
+</div>
