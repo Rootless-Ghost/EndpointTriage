@@ -163,8 +163,11 @@ Each log source targets specific Event IDs relevant to incident response:
 ## License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) for details. 
+
 <div align="center">
+    
 ## Author
 
 **RG-Nebula** — [github.com/Rootless-Ghost](https://github.com/Rootless-Ghost)
+
 </div>
