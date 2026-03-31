@@ -162,4 +162,4 @@ MIT
 
 ## Author
 
-**Nebula** — [github.com/Rootless-Ghost](https://github.com/Rootless-Ghost)
+**RG-Nebula** — [github.com/Rootless-Ghost](https://github.com/Rootless-Ghost)
