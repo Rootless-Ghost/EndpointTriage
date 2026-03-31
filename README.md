@@ -1,5 +1,5 @@
 <div align="center">
-    
+
 # EndpointTriage
 
 **Automated forensic artifact collector for Windows endpoint incident response.**
@@ -7,6 +7,13 @@
 PowerShell-based triage script that collects volatile and non-volatile forensic artifacts from Windows endpoints, flags suspicious indicators, and outputs a structured triage package with an HTML summary report.
 
 Built for SOC analysts and incident responders who need fast, repeatable endpoint collection without deploying heavyweight forensic suites.
+
+<br>
+
+![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-blue?style=flat-square&logo=powershell&logoColor=white)
+![Windows](https://img.shields.io/badge/Platform-Windows-0078D6?style=flat-square&logo=windows&logoColor=white)
+![MITRE ATT&CK](https://img.shields.io/badge/MITRE_ATT%26CK-Mapped-purple?style=flat-square)
+![DFIR](https://img.shields.io/badge/DFIR-Incident_Response-red?style=flat-square)
 
 </div>
 
