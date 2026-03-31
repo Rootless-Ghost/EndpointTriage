@@ -9,6 +9,7 @@ PowerShell-based triage script that collects volatile and non-volatile forensic 
 Built for SOC analysts and incident responders who need fast, repeatable endpoint collection without deploying heavyweight forensic suites.
 
 </div>
+
 ---
 
 ## Artifact Collection
