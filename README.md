@@ -1,4 +1,5 @@
 <div align="center">
+    
 # EndpointTriage
 
 **Automated forensic artifact collector for Windows endpoint incident response.**
