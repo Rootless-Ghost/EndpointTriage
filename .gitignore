@@ -1,0 +1,13 @@
+# Triage output
+TriageOutput/
+
+# Logs
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment
+.env
