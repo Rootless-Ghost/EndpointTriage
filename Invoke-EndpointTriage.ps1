@@ -232,7 +232,7 @@ function Get-SystemInformation {
         $envFile = Join-Path $Dirs.System "environment_variables.csv"
         Get-ChildItem Env: | Select-Object Name, Value |
             Export-Csv -Path $envFile -NoTypeInformation
-        Add-CollectionResult "System" "Environment Variables" "OK" (Get-ChildItem Env:).Count "system/environment_variables.csv"
+        Add-CollectionResult "System" "Environment Variables" "OK" @(Get-ChildItem Env:).Count "system/environment_variables.csv"
         Write-Status "Captured environment variables" "OK"
 
         return $sysInfo
@@ -302,9 +302,9 @@ function Get-ProcessArtifacts {
         $outFile = Join-Path $Dirs.Processes "running_processes.csv"
         $processes | Export-Csv -Path $outFile -NoTypeInformation
 
-        $flaggedCount = ($processes | Where-Object { $_.Flags -ne "" }).Count
-        Add-CollectionResult "Processes" "Running Processes" "OK" $processes.Count "processes/running_processes.csv"
-        Write-Status "Captured $($processes.Count) processes ($flaggedCount flagged)" "OK"
+        $flaggedCount = @($processes | Where-Object { $_.Flags -ne "" }).Count
+        Add-CollectionResult "Processes" "Running Processes" "OK" @($processes).Count "processes/running_processes.csv"
+        Write-Status "Captured $(@($processes).Count) processes ($flaggedCount flagged)" "OK"
 
         # Process tree (parent-child relationships)
         $treeFile = Join-Path $Dirs.Processes "process_tree.txt"
@@ -335,7 +335,7 @@ function Get-ProcessArtifacts {
         }
 
         Set-Content -Path $treeFile -Value $treeOutput.ToString()
-        Add-CollectionResult "Processes" "Process Tree" "OK" $rootProcs.Count "processes/process_tree.txt"
+        Add-CollectionResult "Processes" "Process Tree" "OK" @($rootProcs).Count "processes/process_tree.txt"
         Write-Status "Built process tree" "OK"
 
         return $processes
@@ -376,10 +376,10 @@ function Get-NetworkArtifacts {
         $outFile = Join-Path $Dirs.Network "tcp_connections.csv"
         $connections | Export-Csv -Path $outFile -NoTypeInformation
 
-        $established = ($connections | Where-Object { $_.State -eq "Established" }).Count
-        $listening = ($connections | Where-Object { $_.State -eq "Listen" }).Count
-        Add-CollectionResult "Network" "TCP Connections" "OK" $connections.Count "network/tcp_connections.csv"
-        Write-Status "Captured $($connections.Count) TCP connections ($established established, $listening listening)" "OK"
+        $established = @($connections | Where-Object { $_.State -eq "Established" }).Count
+        $listening = @($connections | Where-Object { $_.State -eq "Listen" }).Count
+        Add-CollectionResult "Network" "TCP Connections" "OK" @($connections).Count "network/tcp_connections.csv"
+        Write-Status "Captured $(@($connections).Count) TCP connections ($established established, $listening listening)" "OK"
 
         # UDP endpoints
         $udp = Get-NetUDPEndpoint -ErrorAction Stop | ForEach-Object {
@@ -394,16 +394,16 @@ function Get-NetworkArtifacts {
 
         $udpFile = Join-Path $Dirs.Network "udp_endpoints.csv"
         $udp | Export-Csv -Path $udpFile -NoTypeInformation
-        Add-CollectionResult "Network" "UDP Endpoints" "OK" $udp.Count "network/udp_endpoints.csv"
-        Write-Status "Captured $($udp.Count) UDP endpoints" "OK"
+        Add-CollectionResult "Network" "UDP Endpoints" "OK" @($udp).Count "network/udp_endpoints.csv"
+        Write-Status "Captured $(@($udp).Count) UDP endpoints" "OK"
 
         # DNS cache
         $dnsFile = Join-Path $Dirs.Network "dns_cache.csv"
         try {
             $dns = Get-DnsClientCache -ErrorAction Stop | Select-Object Entry, RecordName, RecordType, Status, Data, TimeToLive
             $dns | Export-Csv -Path $dnsFile -NoTypeInformation
-            Add-CollectionResult "Network" "DNS Cache" "OK" $dns.Count "network/dns_cache.csv"
-            Write-Status "Captured $($dns.Count) DNS cache entries" "OK"
+            Add-CollectionResult "Network" "DNS Cache" "OK" @($dns).Count "network/dns_cache.csv"
+            Write-Status "Captured $(@($dns).Count) DNS cache entries" "OK"
         }
         catch {
             Write-Status "DNS cache collection failed: $_" "WARN"
@@ -415,8 +415,8 @@ function Get-NetworkArtifacts {
         try {
             $arp = Get-NetNeighbor -ErrorAction Stop | Select-Object IPAddress, LinkLayerAddress, State, InterfaceAlias
             $arp | Export-Csv -Path $arpFile -NoTypeInformation
-            Add-CollectionResult "Network" "ARP Table" "OK" $arp.Count "network/arp_table.csv"
-            Write-Status "Captured $($arp.Count) ARP entries" "OK"
+            Add-CollectionResult "Network" "ARP Table" "OK" @($arp).Count "network/arp_table.csv"
+            Write-Status "Captured $(@($arp).Count) ARP entries" "OK"
         }
         catch {
             Write-Status "ARP collection failed: $_" "WARN"
@@ -427,7 +427,7 @@ function Get-NetworkArtifacts {
         $adapterFile = Join-Path $Dirs.Network "network_adapters.csv"
         Get-NetAdapter | Select-Object Name, InterfaceDescription, Status, MacAddress, LinkSpeed |
             Export-Csv -Path $adapterFile -NoTypeInformation
-        Add-CollectionResult "Network" "Network Adapters" "OK" (Get-NetAdapter).Count "network/network_adapters.csv"
+        Add-CollectionResult "Network" "Network Adapters" "OK" @(Get-NetAdapter).Count "network/network_adapters.csv"
 
         return $connections
     }
@@ -472,8 +472,8 @@ function Get-ScheduledTaskArtifacts {
 
         $outFile = Join-Path $Dirs.Persistence "scheduled_tasks.csv"
         $tasks | Export-Csv -Path $outFile -NoTypeInformation
-        Add-CollectionResult "Persistence" "Scheduled Tasks" "OK" $tasks.Count "persistence/scheduled_tasks.csv"
-        Write-Status "Found $($tasks.Count) non-Microsoft scheduled tasks" "OK"
+        Add-CollectionResult "Persistence" "Scheduled Tasks" "OK" @($tasks).Count "persistence/scheduled_tasks.csv"
+        Write-Status "Found $(@($tasks).Count) non-Microsoft scheduled tasks" "OK"
 
         return $tasks
     }
@@ -749,12 +749,12 @@ function Get-EventLogArtifacts {
             $events = Get-WinEvent -FilterHashtable $filterHash -MaxEvents $EventLogLimit -ErrorAction Stop |
                 Select-Object TimeCreated, Id, LevelDisplayName, ProviderName, Message,
                     @{N='RecordId'; E={$_.RecordId}},
-                    @{N='UserId'; E={$_.UserId?.Value}}
+                    @{N='UserId'; E={if ($_.UserId) { $_.UserId.Value } else { $null }}}
 
             $outFile = Join-Path $Dirs.EventLogs "${safeName}.csv"
             $events | Export-Csv -Path $outFile -NoTypeInformation
-            Add-CollectionResult "EventLogs" $query.LogName "OK" $events.Count "eventlogs/${safeName}.csv"
-            Write-Status "$($query.LogName): $($events.Count) events — $($query.Desc)" "OK"
+            Add-CollectionResult "EventLogs" $query.LogName "OK" @($events).Count "eventlogs/${safeName}.csv"
+            Write-Status "$($query.LogName): $(@($events).Count) events — $($query.Desc)" "OK"
         }
         catch [System.Exception] {
             if ($_.Exception.Message -match "No events were found") {
@@ -786,8 +786,8 @@ function Get-UserArtifacts {
 
         $outFile = Join-Path $Dirs.System "local_users.csv"
         $users | Export-Csv -Path $outFile -NoTypeInformation
-        Add-CollectionResult "System" "Local Users" "OK" $users.Count "system/local_users.csv"
-        Write-Status "Found $($users.Count) local user accounts" "OK"
+        Add-CollectionResult "System" "Local Users" "OK" @($users).Count "system/local_users.csv"
+        Write-Status "Found $(@($users).Count) local user accounts" "OK"
 
         # Group membership for key groups
         $groups = @("Administrators", "Remote Desktop Users", "Remote Management Users",
@@ -833,8 +833,8 @@ function Get-AdditionalArtifacts {
             PathName, State, StartMode, Description
         $driverFile = Join-Path $Dirs.System "loaded_drivers.csv"
         $drivers | Export-Csv -Path $driverFile -NoTypeInformation
-        Add-CollectionResult "System" "Loaded Drivers" "OK" $drivers.Count "system/loaded_drivers.csv"
-        Write-Status "Captured $($drivers.Count) loaded drivers" "OK"
+        Add-CollectionResult "System" "Loaded Drivers" "OK" @($drivers).Count "system/loaded_drivers.csv"
+        Write-Status "Captured $(@($drivers).Count) loaded drivers" "OK"
     }
     catch {
         Write-Status "Driver enumeration failed: $_" "WARN"
@@ -852,11 +852,11 @@ function Get-AdditionalArtifacts {
             $_.Name -match '(cobaltstrike|beacon|meterpreter|psexec|msagent_|postex_|status_|MSSE-|win_svc|ntsvcs|DserNamePipe|SearchTextHarvester|msrpc_|winsock)'
         }
         if ($suspPipes) {
-            Write-Status "ALERT: $($suspPipes.Count) potentially suspicious named pipes detected!" "WARN"
+            Write-Status "ALERT: $(@($suspPipes).Count) potentially suspicious named pipes detected!" "WARN"
         }
 
-        Add-CollectionResult "Network" "Named Pipes" "OK" $pipes.Count "network/named_pipes.csv"
-        Write-Status "Captured $($pipes.Count) named pipes" "OK"
+        Add-CollectionResult "Network" "Named Pipes" "OK" @($pipes).Count "network/named_pipes.csv"
+        Write-Status "Captured $(@($pipes).Count) named pipes" "OK"
     }
     catch {
         Write-Status "Named pipe enumeration failed: $_" "WARN"
@@ -869,8 +869,8 @@ function Get-AdditionalArtifacts {
             Select-Object DisplayName, Direction, Action, Profile, Description
         $fwFile = Join-Path $Dirs.Network "firewall_rules.csv"
         $fwRules | Export-Csv -Path $fwFile -NoTypeInformation
-        Add-CollectionResult "Network" "Firewall Rules" "OK" $fwRules.Count "network/firewall_rules.csv"
-        Write-Status "Captured $($fwRules.Count) active firewall rules" "OK"
+        Add-CollectionResult "Network" "Firewall Rules" "OK" @($fwRules).Count "network/firewall_rules.csv"
+        Write-Status "Captured $(@($fwRules).Count) active firewall rules" "OK"
     }
     catch {
         Write-Status "Firewall rule export failed: $_" "WARN"
@@ -1094,9 +1094,9 @@ New-TriageReport
 # Final summary
 $TriageEnd = Get-Date
 $Duration = $TriageEnd - $TriageStart
-$okCount = ($CollectionResults | Where-Object { $_.Status -eq "OK" }).Count
-$warnCount = ($CollectionResults | Where-Object { $_.Status -eq "WARN" }).Count
-$errCount = ($CollectionResults | Where-Object { $_.Status -eq "ERROR" }).Count
+$okCount = @($CollectionResults | Where-Object { $_.Status -eq "OK" }).Count
+$warnCount = @($CollectionResults | Where-Object { $_.Status -eq "WARN" }).Count
+$errCount = @($CollectionResults | Where-Object { $_.Status -eq "ERROR" }).Count
 $totalArtifacts = ($CollectionResults | Measure-Object -Property Count -Sum).Sum
 
 Write-Host "`n" + "=" * 66 -ForegroundColor Cyan

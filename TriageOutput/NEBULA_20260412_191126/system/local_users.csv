@@ -1,0 +1,7 @@
+"Name","Enabled","LastLogon","PasswordLastSet","PasswordRequired","PasswordExpires","SID","Description"
+"Administrator","False",,,"True",,"S-1-5-21-3541081543-3933178036-1271275765-500","Built-in account for administering the computer/domain"
+"DefaultAccount","False",,,"False",,"S-1-5-21-3541081543-3933178036-1271275765-503","A user account managed by the system."
+"Guest","False",,,"False",,"S-1-5-21-3541081543-3933178036-1271275765-501","Built-in account for guest access to the computer/domain"
+"Nebula","True","7/20/2025 20:16:14","7/18/2025 05:11:41","False",,"S-1-5-21-3541081543-3933178036-1271275765-1001",""
+"WDAGUtilityAccount","False",,"7/18/2025 04:50:33","True","8/29/2025 04:50:33","S-1-5-21-3541081543-3933178036-1271275765-504","A user account managed and used by the system for Windows Defender Application Guard scenarios."
+"WsiAccount","False","1/29/2026 12:54:38","1/29/2026 12:54:38","False",,"S-1-5-21-3541081543-3933178036-1271275765-1002","A user account managed and used by the system for Web Sign-in scenarios."
