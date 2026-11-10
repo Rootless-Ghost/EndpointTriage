@@ -17,6 +17,8 @@ Built for SOC analysts and incident responders who need fast, repeatable endpoin
 
 </div>
 
+> **Lab-grade tooling.** Built and tested in a home detection-engineering lab. Works as documented, but isn't hardened for production or multi-user deployment. See SECURITY.md for scope.
+
 ---
 
 ## Artifact Collection
